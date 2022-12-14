@@ -147,9 +147,9 @@ fn run() -> Result<()> {
                 .next()
                 .context("Unexpected workspace name")?;
             let surround_spacing = if config.other.no_surround_space {
-                ' '.to_string()
+                ""
             } else {
-                String::new()
+                " "
             };
 
             if new_name.is_empty() {
