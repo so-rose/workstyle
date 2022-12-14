@@ -37,3 +37,5 @@ deduplicate_icons = false
 
 use_empty_icon = false
 empty_icon = ""
+
+no_surround_space = false

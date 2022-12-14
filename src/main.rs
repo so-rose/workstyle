@@ -44,6 +44,12 @@ use window_manager::{Window, WindowManager};
 /// [other]
 /// use_empty_icon = true
 /// empty_icon = ""
+///
+/// By default, the icons will be surrounded by a space.
+/// You can turn off this functionality using:
+/// ```toml
+/// [other]
+/// no_surround_space = true
 
 #[derive(Parser, Debug)]
 #[clap(version, about)]
@@ -80,6 +86,9 @@ fn pretty_windows(config: &Config, windows: &[Window]) -> String {
             s.push_str(&pretty_window(config, window));
             s.push(' ');
         }
+    }
+    if config.other.no_surround_space {
+        s.pop();
     }
     s
 }
@@ -123,7 +132,9 @@ fn run() -> Result<()> {
 
     loop {
         // Wait for an OK(), which indicates an event that triggers a rename
-        if let Err(..) = wm.wait_for_event() { continue }
+        if let Err(..) = wm.wait_for_event() {
+            continue;
+        }
 
         // TODO: watch for changes using inotify and read the config only when needed
         let config = Config::new()?;
@@ -135,6 +146,12 @@ fn run() -> Result<()> {
                 .split(':')
                 .next()
                 .context("Unexpected workspace name")?;
+            let surround_spacing = if config.other.no_surround_space {
+                ' '.to_string()
+            } else {
+                String::new()
+            };
+
             if new_name.is_empty() {
                 let empty_name = if config.other.use_empty_icon {
                     config.empty_icon()
@@ -144,9 +161,12 @@ fn run() -> Result<()> {
                 .to_string();
 
                 // Extra space matches other workspace icons.
-                wm.rename_workspace(&name, &format!("{num}: {empty_name} "))?;
+                wm.rename_workspace(
+                    &name,
+                    &format!("{num}:{surround_spacing}{empty_name}{surround_spacing}"),
+                )?;
             } else {
-                wm.rename_workspace(&name, &format!("{num}: {new_name}"))?;
+                wm.rename_workspace(&name, &format!("{num}:{surround_spacing}{new_name}"))?;
             }
         }
     }

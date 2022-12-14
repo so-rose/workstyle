@@ -107,4 +107,11 @@ use_empty_icon = true
 empty_icon = ""
 ```
 
+By default, the icons will be surrounded by a space.
+You can turn off this functionality using:
+```toml
+[other]
+no_surround_space = true
+```
+
 Note that the crate [`find_unicode`](https://github.com/pierrechevalier83/find_unicode/) can help find a unicode character directly from the command line. It now supports all of nerdfonts unicode space.

@@ -23,6 +23,7 @@ pub struct Other {
     pub deduplicate_icons: bool,
     pub use_empty_icon: bool,
     pub empty_icon: Option<String>,
+    pub no_surround_space: bool,
 }
 
 impl Config {
